@@ -4,7 +4,9 @@ require 'digest/md5'
 # must include the oauth proxy object
 require 'oauth/request_proxy/rack_request'
 require 'pp'
+require 'pry'
 
+configure(:development) { set :session_secret, "something" }
 enable :sessions
 
 get '/' do
@@ -25,6 +27,18 @@ get '/tool_config' do
 
   @message = params['message']
   @username = session['username']
+  @resource_link_id = "ResourceONE"
+  @context_id = "ContextONE"
+  @context_title = "Context ONE"
+
+  if @username[0..6].downcase == "teacher"
+    @roles = "Instructor,TeachingAssistant"
+  elsif @username[0..6].downcase == "learner"
+    @roles = "Learner"
+  else
+    @roles = "Learner,Instructor,Administrator,TeachingAssistant,ContentDeveloper,Mentor"
+  end
+
   erb :tool_config
 end
 
@@ -46,7 +60,8 @@ post '/tool_launch' do
   @consumer.resource_link_id = params["resource_link_id"]
   @consumer.launch_presentation_return_url = host + '/tool_return'
   @consumer.lis_person_name_given = session['username']
-  @consumer.user_id = Digest::MD5.hexdigest(session['username'])
+  # @consumer.user_id = Digest::MD5.hexdigest(session['username'])
+  @consumer.user_id = session['username'] + '_user_id'
   @consumer.roles = params["roles"]
   @consumer.context_id = params["context_id"]
   @consumer.context_title = params["context_title"]
@@ -65,6 +80,8 @@ end
 get '/tool_return' do
   @error_message = params['lti_errormsg']
   @message = params['lti_msg']
+  p "================================== WOOOOOT ====================================="
+  p params
   puts "Warning: #{params['lti_errorlog']}" if params['lti_errorlog']
   puts "Info: #{params['lti_log']}" if params['lti_log']
 
