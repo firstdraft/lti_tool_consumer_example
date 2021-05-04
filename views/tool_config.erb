@@ -8,7 +8,7 @@
 </style>
 
 <h1>Tool Provider Configuration</h1>
-<p>Hey <%= @username %>, let's launch a Tool Provider!</p>
+<p>Hey Alice, let's launch a Tool Provider!</p>
 <% if @message %>
   <p style="color: #ff3d23;"><%= @message %></p>
 <% end %>
@@ -54,6 +54,11 @@
       <td>Tool Consumer Instance Name</td>
       <td><input name="tool_consumer_instance_name" type="text" value="Example Consumer"/></td>
     </tr>
+    <tr>
+      <td>LIS Person Name Given</td>
+      <td><input name="lis_person_name_given" type="text" value="Alice"/></td>
+    </tr>
+
     <tr>
       <td>Launch as assignment</td>
       <td><input type="checkbox" name="assignment" checked="checked"></td>

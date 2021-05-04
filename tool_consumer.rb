@@ -8,23 +8,15 @@ require 'pp'
 enable :sessions
 
 get '/' do
-  session['username'] = nil
   erb :index
 end
 
 post '/set_name' do
-  session['username'] = params['username'] || 'Bob'
   redirect to('/tool_config')
 end
 
 get '/tool_config' do
-  unless session['username']
-    redirect to('/')
-    return
-  end
-
   @message = params['message']
-  @username = session['username']
   erb :tool_config
 end
 
@@ -45,8 +37,8 @@ post '/tool_launch' do
   # Only this first one is required, the rest are recommended
   @consumer.resource_link_id = params["resource_link_id"]
   @consumer.launch_presentation_return_url = host + '/tool_return'
-  @consumer.lis_person_name_given = session['username']
-  @consumer.user_id = Digest::MD5.hexdigest(session['username'])
+  @consumer.lis_person_name_given = 'Alice'
+  @consumer.user_id = Digest::MD5.hexdigest('Alice')
   @consumer.roles = params["roles"]
   @consumer.context_id = params["context_id"]
   @consumer.context_title = params["context_title"]
